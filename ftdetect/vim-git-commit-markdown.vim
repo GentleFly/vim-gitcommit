@@ -4,4 +4,5 @@
 " License:    VIM License
 
 autocmd BufNewFile,BufRead *.git/COMMIT_EDITMSG set ft=gitcommit_markdown
+autocmd BufNewFile,BufRead *.git/MERGE_MSG      set ft=gitcommit_markdown
 
