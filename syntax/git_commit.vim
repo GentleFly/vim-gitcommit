@@ -4,6 +4,10 @@
 " Filenames:	*.git/COMMIT_EDITMSG
 " Last Change:	2016 Aug 29
 
+let g:gitcommit_cchar=";"
+let g:gitcommit_cchar = get(g:, 'gitcommit_cchar', "#")
+
+
 if exists('b:current_syntax') && b:current_syntax == 'git_commit'
   finish
 endif
@@ -20,28 +24,28 @@ unlet b:current_syntax
 
 syn include @markdown syntax/markdown.vim
 syn include @gitcommitDiff syntax/diff.vim
-syn region gitcommitDiff start=/\%(^diff --\%(git\|cc\|combined\) \)\@=/ end=/^\%(diff --\|$\|;\)\@=/ fold contains=@gitcommitDiff
+exec 'syn region gitcommitDiff start=/\%(^diff --\%(git\|cc\|combined\) \)\@=/ end=/^\%(diff --\|$\|'.g:gitcommit_cchar.'\)\@=/ fold contains=@gitcommitDiff'
 
-syn match   gitcommitFirstLine	"\%^[^;].*"  nextgroup=gitcommitBlank skipnl
+exec 'syn match   gitcommitFirstLine	"\%^[^'.g:gitcommit_cchar.'].*"  nextgroup=gitcommitBlank skipnl'
 syn match   gitcommitSummary	"^.\{0,50\}" contained containedin=gitcommitFirstLine nextgroup=gitcommitOverflow contains=@Spell
 syn match   gitcommitOverflow	".*" contained contains=@markdown
-syn match   gitcommitBlank	"^[^;].*" contained contains=@Spell
-syn match   gitcommitComment	"^;.*"
-syn match   gitcommitHead	"^\%(;   .*\n\)\+;$" contained transparent
-syn match   gitcommitOnBranch	"\%(^; \)\@<=On branch" contained containedin=gitcommitComment nextgroup=gitcommitBranch skipwhite
-syn match   gitcommitOnBranch	"\%(^; \)\@<=Your branch .\{-\} '" contained containedin=gitcommitComment nextgroup=gitcommitBranch skipwhite
+exec 'syn match   gitcommitBlank	"^[^'.g:gitcommit_cchar.'].*" contained contains=@Spell'
+exec 'syn match   gitcommitComment	"^'.g:gitcommit_cchar.'.*"'
+exec 'syn match   gitcommitHead	"^\%('.g:gitcommit_cchar.'   .*\n\)\+;$" contained transparent'
+exec 'syn match   gitcommitOnBranch	"\%(^'.g:gitcommit_cchar.' \)\@<=On branch" contained containedin=gitcommitComment nextgroup=gitcommitBranch skipwhite'
+exec 'syn match   gitcommitOnBranch	"\%(^'.g:gitcommit_cchar.' \)\@<=Your branch .\{-\} '."'\" contained containedin=gitcommitComment nextgroup=gitcommitBranch skipwhite"
 syn match   gitcommitBranch	"[^ ']\+" contained
-syn match   gitcommitNoBranch	"\%(^; \)\@<=Not currently on any branch." contained containedin=gitcommitComment
-syn match   gitcommitHeader	"\%(^; \)\@<=.*:$"	contained containedin=gitcommitComment
-syn region  gitcommitAuthor	matchgroup=gitCommitHeader start=/\%(^; \)\@<=\%(Author\|Committer\):/ end=/$/ keepend oneline contained containedin=gitcommitComment transparent
-syn match   gitcommitNoChanges	"\%(^; \)\@<=No changes$" contained containedin=gitcommitComment
+exec 'syn match   gitcommitNoBranch	"\%(^'.g:gitcommit_cchar.' \)\@<=Not currently on any branch." contained containedin=gitcommitComment'
+exec 'syn match   gitcommitHeader	"\%(^'.g:gitcommit_cchar.' \)\@<=.*:$"	contained containedin=gitcommitComment'
+exec 'syn region  gitcommitAuthor	matchgroup=gitCommitHeader start=/\%(^'.g:gitcommit_cchar.' \)\@<=\%(Author\|Committer\):/ end=/$/ keepend oneline contained containedin=gitcommitComment transparent'
+exec 'syn match   gitcommitNoChanges	"\%(^'.g:gitcommit_cchar.' \)\@<=No changes$" contained containedin=gitcommitComment'
 
-syn region  gitcommitUntracked	start=/^; Untracked files:/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitUntrackedFile fold
+exec 'syn region  gitcommitUntracked	start=/^'.g:gitcommit_cchar.' Untracked files:/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitUntrackedFile fold'
 syn match   gitcommitUntrackedFile  "\t\@<=.*"	contained
 
-syn region  gitcommitDiscarded	start=/^; Change\%(s not staged for commit\|d but not updated\):/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitDiscardedType fold
-syn region  gitcommitSelected	start=/^; Changes to be committed:/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitSelectedType fold
-syn region  gitcommitUnmerged	start=/^; Unmerged paths:/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitUnmergedType fold
+exec 'syn region  gitcommitDiscarded	start=/^'.g:gitcommit_cchar.' Change\%(s not staged for commit\|d but not updated\):/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitDiscardedType fold'
+exec 'syn region  gitcommitSelected	start=/^'.g:gitcommit_cchar.' Changes to be committed:/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitSelectedType fold'
+exec 'syn region  gitcommitUnmerged	start=/^'.g:gitcommit_cchar.' Unmerged paths:/ end=/^;$\|^;\@!/ contains=gitcommitHeader,gitcommitHead,gitcommitUnmergedType fold'
 
 
 syn match   gitcommitDiscardedType	"\t\@<=[[:lower:]][^:]*[[:lower:]]: "he=e-2	contained containedin=gitcommitComment nextgroup=gitcommitDiscardedFile skipwhite
@@ -54,8 +58,8 @@ syn match   gitcommitDiscardedArrow	" -> " contained nextgroup=gitcommitDiscarde
 syn match   gitcommitSelectedArrow	" -> " contained nextgroup=gitcommitSelectedFile
 syn match   gitcommitUnmergedArrow	" -> " contained nextgroup=gitcommitSelectedFile
 
-syn match   gitcommitWarning		"\%^[^;].*: needs merge$" nextgroup=gitcommitWarning skipnl
-syn match   gitcommitWarning		"^[^;].*: needs merge$" nextgroup=gitcommitWarning skipnl contained
+exec 'syn match   gitcommitWarning		"\%^[^'.g:gitcommit_cchar.'].*: needs merge$" nextgroup=gitcommitWarning skipnl'
+exec 'syn match   gitcommitWarning		"^[^'.g:gitcommit_cchar.'].*: needs merge$" nextgroup=gitcommitWarning skipnl contained'
 syn match   gitcommitWarning		"^\%(no changes added to commit\|nothing \%(added \)\=to commit\)\>.*\%$"
 
 hi def link gitcommitSummary		Keyword
