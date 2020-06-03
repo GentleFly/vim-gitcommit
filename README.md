@@ -1,1 +1,1 @@
-# vim-gitcommit-markdown
+﻿# vim-gitcommit
