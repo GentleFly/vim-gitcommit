@@ -4,7 +4,7 @@
 " Filenames:	*.git/COMMIT_EDITMSG
 " Last Change:	2016 Aug 29
 
-if exists('b:current_syntax') && b:current_syntax == 'gitcommit_markdown'
+if exists('b:current_syntax') && b:current_syntax == 'git_commit'
   finish
 endif
 
@@ -85,4 +85,4 @@ hi def link gitcommitArrow		gitcommitComment
 "hi def link gitcommitOverflow		Error
 hi def link gitcommitBlank		Error
 
-let b:current_syntax = "gitcommit_markdown"
+let b:current_syntax = "git_commit"
