@@ -4,9 +4,8 @@
 " Filenames:	*.git/COMMIT_EDITMSG
 " Last Change:	2016 Aug 29
 
-let g:gitcommit_cchar=";"
 let g:gitcommit_cchar = get(g:, 'gitcommit_cchar', "#")
-
+let g:gitcommit_syntax = get(g:, 'gitcommit_syntax', "")
 
 if exists('b:current_syntax') && b:current_syntax == 'git_commit'
   finish
@@ -19,16 +18,20 @@ if has("spell")
   syn spell toplevel
 endif
 
-runtime! syntax/markdown.vim
-unlet b:current_syntax
+"runtime! syntax/pandoc.vim
+"unlet b:current_syntax
+"syn include @markdown syntax/pandoc.vim
+exec 'runtime!  syntax/'.g:gitcommit_syntax.'.vim'
+unlet! b:current_syntax
+exec 'syn include @'.toupper(g:gitcommit_syntax).' syntax/'.g:gitcommit_syntax.'.vim'
 
-syn include @markdown syntax/markdown.vim
+
 syn include @gitcommitDiff syntax/diff.vim
 exec 'syn region gitcommitDiff start=/\%(^diff --\%(git\|cc\|combined\) \)\@=/ end=/^\%(diff --\|$\|'.g:gitcommit_cchar.'\)\@=/ fold contains=@gitcommitDiff'
 
 exec 'syn match   gitcommitFirstLine	"\%^[^'.g:gitcommit_cchar.'].*"  nextgroup=gitcommitBlank skipnl'
 syn match   gitcommitSummary	"^.\{0,50\}" contained containedin=gitcommitFirstLine nextgroup=gitcommitOverflow contains=@Spell
-syn match   gitcommitOverflow	".*" contained contains=@markdown
+exec 'syn match   gitcommitOverflow	".*" contained contains=@'.toupper(g:gitcommit_syntax)
 exec 'syn match   gitcommitBlank	"^[^'.g:gitcommit_cchar.'].*" contained contains=@Spell'
 exec 'syn match   gitcommitComment	"^'.g:gitcommit_cchar.'.*"'
 exec 'syn match   gitcommitHead	"^\%('.g:gitcommit_cchar.'   .*\n\)\+;$" contained transparent'
